@@ -1,0 +1,6 @@
+indexes:
+- kind: Numbers
+  ancestor: yes
+  properties:
+  - name: Date
+    direction: desc
