@@ -99,3 +99,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+assignment1/test1/go/app.yaml
+assignment1/test1/go/index.yaml
+assignment1/test1/php/app.yaml
+assignment1/test1/php/app.yaml
+assignment1/test2/task1/queries.sql

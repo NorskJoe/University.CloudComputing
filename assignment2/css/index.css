@@ -1,27 +1,99 @@
-.banner
-{
+.main {
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #000000;
+}
+
+#banner {
 	height: 200px;
-	color: yellow;
+	background-color: #813772;
 }
 
-.login
-{
-
+#banner img {
+	height: 100%;
+	line-height: 100%;
+	width: 15%;
+	float: left;
 }
 
-#map
-{
-	color: blue;
+#banner h1 {
+	font-family: Roboto;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+	color: #000000;
+}
+
+#login {}
+
+#map {
+	margin-left: auto;
+	margin-right: auto;
 	height: 400px;
-	width: 100%;
+	width: 75%;
 }
 
-.info
+
+#infoWindow_content .title
 {
-
+	font-weight: bold;
 }
 
-.history
+#infoWindow_content
 {
-
+	display: none;
 }
+
+#map #infoWindow_content
+{
+	display: inline;
+}
+
+#main
+{
+	margin: 10px 10px 0 0;
+	border-radius: 2px 0 0 2px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	outline: none;
+	box-shadow: 0 2px 6px rgba(#000000, 0.3);
+	background-color: #fff;
+	font-family: Roboto;
+}
+
+#map_input
+{
+	padding-bottom: 12px;
+	margin-right: 12px;
+}
+
+#place_input
+{
+	background-color: #fff;
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 300;
+    margin-left: 12px;
+    padding: 0 11px 0 13px;
+    text-overflow: ellipsis;
+    width: 400px;
+}
+
+#place_input:focus
+{
+	border-color: #4d90fe;
+}
+
+#title
+{
+	color: #fff;
+    background-color: #4d90fe;
+    font-size: 25px;
+    font-weight: 500;
+    padding: 6px 12px;
+}
+
+#info {}
+
+#history {}
