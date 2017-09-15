@@ -65,20 +65,6 @@ function getWeather(lat, long) {
 	$.getJSON(url, function(forecast) {
 		console.log(forecast);
 	});
-	// alert('in getWeather');
-	// var json_data;
-	// var http = new XMLHttpRequest();
-	// http.onreadystatechange = function() {
-	// 	if (http.readyState == 4 && http.status == 200) {
-	// 		alert('made request');
-	// 		json_data = JSON.parse(http.responseText);
-	// 		alert(json_data);
-	// 	}
-	// }
-	// http.open("GET", url, true);
-	// http.send();
-	// alert('leaving getWeather');
-	// // document.getElementById('info').innerHTML = json_data;
 }
 
 function planRoute() {
