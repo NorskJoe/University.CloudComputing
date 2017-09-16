@@ -1,7 +1,9 @@
+/*******************************************************
+		GOOGLE MAP AND ROUTING
+********************************************************/
 var map;
 var directionsService;
 var directionsDisplay;
-
 var start_lat;
 var start_long;
 var end_lat;
@@ -60,13 +62,6 @@ function setupStartAutoComplete(map) {
 	});
 }
 
-function getWeather(lat, long) {
-	var url = "https://api.darksky.net/forecast/9eb9c37070bfd11b8f7dd8f0de01c1ca/" + lat + "," + long;
-	$.getJSON(url, function(forecast) {
-		console.log(forecast);
-	});
-}
-
 function planRoute() {
 	var start = document.getElementById('start_input').value;
 	var dest = document.getElementById('destination_input').value;
@@ -90,16 +85,78 @@ function planRoute() {
 	getWeather(start_lat, start_long);
 }
 
-function test() {
-	alert('in test function');
+
+/***************************************************
+		GOOGLE USER SIGN IN
+****************************************************/
+function onSignIn(googleUser) {
+	var profile = googleUser.getBasicProfile();
+	// console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+	// console.log('Name: ' + profile.getName());
+	// console.log('Image URL: ' + profile.getImageUrl());
+	// console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
 }
 
-// ***** API KEYS ***** //
+// Not currently used
+function signOut() {
+	var auth2 = gapi.auth2.getAuthInstance();
+	auth2.signOut().then(function () {
+		console.log('signed out');
+	});
+}
 
-/***********	GOOGLE
- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCc4-ilxhIY3v2nhbMxFHHE1toVkcSu1o"></script>
-*************/
 
-/********** forecast.io (darksky)
-https://api.darksky.net/forecast/9eb9c37070bfd11b8f7dd8f0de01c1ca/[latitude],[longitude]
-***********/
+/************************************************************
+		API FUNCTIONS
+*************************************************************/
+function initApi() {
+	gapi.client.load('rideendpoint', 'v1', null, 'https://cycleplan-s3542413.appspot.com/_ah/api');
+
+	document.getElementById('insertQuote').onclick = function() {
+		saveRide();
+	}
+}
+
+function saveRide() {
+	var _id = document.getElementById('txtAuthorName').value;
+	var _s_lat = document.getElementById('s_lat').value;
+	var _s_lng = document.getElementById('s_lng').value;
+	var _d_lat = document.getElementById('d_lat').value;
+	var _d_lng = document.getElementById('d_lng').value;
+
+	var request = {};
+	request.user_id = _id;
+	request.start_lat = _s_lat;
+	request.start_lng = _s_lng;
+	request.end_lat = _d_lat;
+	request.end_lng = _d_lng;
+
+	console.log(_id);
+	console.log(_s_lat);
+	console.log(_s_lng);
+	console.log(_d_lat);
+	console.log(_d_lng);
+
+	gapi.client.rideendpoint.insertRide(request).execute(function (resp) {
+			if (!resp.code) {
+				console.log(_id);
+				console.log(_s_lat);
+				console.log(_s_lng);
+				console.log(_d_lat);
+				console.log(_d_lng);
+			}
+			else {
+				alert('error' + resp);
+			}
+	});
+}
+
+/*********************************************************************
+		WEATHER FUNCTIONS
+**********************************************************************/
+function getWeather(lat, long) {
+	var url = "https://api.darksky.net/forecast/9eb9c37070bfd11b8f7dd8f0de01c1ca/" + lat + "," + long;
+	$.getJSON(url, function(forecast) {
+		console.log(forecast);
+	});
+}

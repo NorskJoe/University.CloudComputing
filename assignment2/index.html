@@ -5,14 +5,17 @@
 	<title>Welcome | CyclePlan</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+	<meta name="google-signin-client_id" content="446461886659-hb3c8fvjgvh97bgleboa5khg1j5bdkto.apps.googleusercontent.com">
 	<link rel="stylesheet" href="css/index.css">
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js">
 	</script>
 	<script type="text/javascript" src="scripts/index.js"></script>
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCc4-ilxhIY3v2nhbMxFHHE1toVkcSu1o&libraries=places,geometry"></script>
+	<script type="text/javascript" src="https://apis.google.com/js/platform.js"></script>
+	<script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
 </head>
 
-<body onload="initMap()" class="main">
+<body onload="initMap(); initApi()" class="main">
 
 	<!-- The banner -->
 	<div id="banner">
@@ -22,11 +25,7 @@
 
 	<!-- Login menu -->
 	<div id="login">
-		<form id="existing_user_login" action="authenticate()">
-			<input type="text" name="user" placeholder="Enter username">
-			<input type="password" name="pword" placeholder="Enter password">
-			<input type="submit" name="user_login" value="Login">
-		</form>
+		<div class="g-signin2" data-onsuccess="onSignIn"></div>
 	</div>
 
 	<!-- Main map and input -->
@@ -58,7 +57,20 @@
 
 	<!-- User history -->
 	<div id="history">
-		<h3>HISTORY</h3>
+		<form>
+			<h2>Insert New Quote</h2>
+			<div><input id="txtAuthorName" placeholder="id"></input>
+			</div>
+			<div><input id="s_lat" placeholder="start lat"></input>
+			</div>
+			<div><input id="s_lng" placeholder="start lng"></input>
+			</div>
+			<div><input id="d_lat" placeholder="end lat"></input>
+			</div>
+			<div><input id="d_lng" placeholder="end lng"></input>
+			</div>
+			<div><input id="insertQuote" type="submit" value="Insert Quote"></div>
+		</form>
 	</div>
 
 	<footer>
