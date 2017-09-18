@@ -5,9 +5,9 @@ var map;
 var directionsService;
 var directionsDisplay;
 var start_lat;
-var start_long;
-var end_lat;
-var end_long;
+var start_lng;
+var dest_lat;
+var dest_lng;
 
 function initMap() {
 	directionsService = new google.maps.DirectionsService;
@@ -33,13 +33,14 @@ function setupDestinationAutoComplete(map) {
 	var autocomplete = new google.maps.places.Autocomplete(input);
 
 	autocomplete.addListener('place_changed', function() {
-		infoWindow.close();
+		// infoWindow.close();
 		var place = autocomplete.getPlace();
 		if (!place.geometry) {
 			window.alert("No details available for: '" + place.name + "'");
 			return;
 		}
-
+		dest_lat = place.geometry.location.lat();
+		dest_lng = place.geometry.location.lng();
 	});
 }
 
@@ -58,7 +59,7 @@ function setupStartAutoComplete(map) {
 			return;
 		}
 		start_lat = place.geometry.location.lat();
-		start_long = place.geometry.location.lng();
+		start_lng = place.geometry.location.lng();
 	});
 }
 
@@ -81,10 +82,39 @@ function planRoute() {
 			window.alert("Directions failed due to " + status);
 		}
 	});
-
-	getWeather(start_lat, start_long);
+	getDistance(start, dest);
+	// getWeather(start_lat, start_lng);
 }
 
+function getDistance(start, dest) {
+	var service = new google.maps.DistanceMatrixService();
+	service.getDistanceMatrix(
+		{
+			origins: [start],
+			destinations: [dest],
+			travelMode: 'BICYCLING'
+		}, distanceCallback);
+
+}
+
+function distanceCallback(response, status) {
+	if (status == 'OK') {
+		var origins = response.originAddresses;
+		var destinations = response.destinationAddresses;
+
+		for (var i = 0; i < origins.length; i++) {
+			var results = response.rows[i].elements;
+
+			for (var j = 0; j < results.length; j++) {
+				var element = results[j];
+				var distance = element.distance.text;
+				var duration = element.duration.text;
+				$("#distance").append('\t\t '+distance);
+				$("#duration").append('\t\t '+duration);
+			}
+		}
+	}
+}
 
 /***************************************************
 		GOOGLE USER SIGN IN
@@ -107,35 +137,30 @@ function signOut() {
 
 
 /************************************************************
-		API FUNCTIONS
+		API-DATASTORE FUNCTIONS
 *************************************************************/
 function initApi() {
 	gapi.client.load('rideendpoint', 'v1', null, 'https://cycleplan-s3542413.appspot.com/_ah/api');
 
-	document.getElementById('insertQuote').onclick = function() {
+	document.getElementById('save_route').onclick = function() {
 		saveRide();
 	}
 }
 
 function saveRide() {
-	var _id = document.getElementById('txtAuthorName').value;
+	var _id = document.getElementById('user_id').value;
 	var _s_lat = document.getElementById('s_lat').value;
 	var _s_lng = document.getElementById('s_lng').value;
 	var _d_lat = document.getElementById('d_lat').value;
 	var _d_lng = document.getElementById('d_lng').value;
 
+
 	var request = {};
 	request.user_id = _id;
 	request.start_lat = _s_lat;
 	request.start_lng = _s_lng;
-	request.end_lat = _d_lat;
-	request.end_lng = _d_lng;
-
-	console.log(_id);
-	console.log(_s_lat);
-	console.log(_s_lng);
-	console.log(_d_lat);
-	console.log(_d_lng);
+	request.dest_lat = _d_lat;
+	request.dest_lng = _d_lng;
 
 	gapi.client.rideendpoint.insertRide(request).execute(function (resp) {
 			if (!resp.code) {
@@ -144,9 +169,10 @@ function saveRide() {
 				console.log(_s_lng);
 				console.log(_d_lat);
 				console.log(_d_lng);
+				alert('ride saved');
 			}
 			else {
-				alert('error' + resp);
+				alert('error');
 			}
 	});
 }
@@ -159,4 +185,36 @@ function getWeather(lat, long) {
 	$.getJSON(url, function(forecast) {
 		console.log(forecast);
 	});
+}
+
+/***********************************************************************
+		VIC ROADS COLLISIONS DATA FUNCTIONS
+************************************************************************/
+function getData() {
+	var start_suburb = $("#start_input").val();
+	var dest_suburb = $("#destination_input").val();
+	start_suburb = start_suburb.match(/[a-zA-Z\s]*(?=,)/);
+	dest_suburb = dest_suburb.match(/[a-zA-Z\s]*(?=,)/);
+	start_suburb = start_suburb[0].toUpperCase();
+	dest_suburb = dest_suburb[0].toUpperCase();
+	$.ajax(
+		{
+			url: 'https://services2.arcgis.com/18ajPSI0b3ppsmMt/arcgis/rest/services/Crashes_Last_Five_Years/FeatureServer/0/query?where=1%3D1&outFields=INJ_OR_FATAL,BICYCLIST,LGA_NAME_ALL&outSR=4326&f=json',
+			dataType: 'json',
+			success: function(data) {
+				var names = data;
+				var total_accidents = 0;
+				$.each(names.features, function(k,v) {
+						// console.log(v.attributes.LGA_NAME_ALL);
+						if(v.attributes.LGA_NAME_ALL == start_suburb && v.attributes.BICYCLIST > 0) {
+							total_accidents++;
+						}
+						if(v.attributes.LGA_NAME_ALL == dest_suburb && v.attributes.BICYCLIST > 0) {
+							total_accidents++;
+						}
+				});
+				total_accidents = total_accidents/5/52;
+				$("#accidents").append('\t\t '+total_accidents.toFixed(1));
+			}
+		});
 }

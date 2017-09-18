@@ -15,7 +15,7 @@
 	<script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
 </head>
 
-<body onload="initMap(); initApi()" class="main">
+<body onload="initMap(); initApi();" class="main">
 
 	<!-- The banner -->
 	<div id="banner">
@@ -39,7 +39,7 @@
 			<div id="map_input">
 				<input type="text" id="start_input" placeholder="Enter a starting point">
 				<input type="text" id="destination_input" placeholder="Enter a destination">
-				<input type="submit" onclick="planRoute()" value="Plan Route">
+				<input type="submit" onclick="planRoute(); getData();" value="Plan Route">
 			</div>
 		</div>
 		<div id="map"></div>
@@ -47,30 +47,36 @@
 
 	<!-- Information display -->
 	<div id="info">
-		<p>Total distance: </p>
-		<p>Starting location weather: </p>
-		<p>Finish location weather: </p>
-		<p>Total ascent: </p>
-		<p>Total descent: </p>
-		<p>Average number of accidents on route: </p>
+		<p id="distance">Total distance: </p>
+		<p id="duration">Estimated duration: </p>
+		<p id="start_weather">Starting location weather: </p>
+		<p id="dest_weather">Finish location weather: </p>
+		<p id="ascent">Total ascent: </p>
+		<p id="descent">Total descent: </p>
+		<p id="accidents">Number of accidents in this area*: </p>
+		<p>*Involving bicycles in an average week (data taken from vicroads.gov.au)</p>
 	</div>
 
 	<!-- User history -->
 	<div id="history">
 		<form>
 			<h2>Insert New Quote</h2>
-			<div><input id="txtAuthorName" placeholder="id"></input>
+			<div><input type="hidden" id="user_id" placeholder="id"></input>
 			</div>
-			<div><input id="s_lat" placeholder="start lat"></input>
+			<div><input type="hidden" id="s_lat" placeholder="start lat"></input>
 			</div>
-			<div><input id="s_lng" placeholder="start lng"></input>
+			<div><input type="hidden" id="s_lng" placeholder="start lng"></input>
 			</div>
-			<div><input id="d_lat" placeholder="end lat"></input>
+			<div><input type="hidden" id="d_lat" placeholder="end lat"></input>
 			</div>
-			<div><input id="d_lng" placeholder="end lng"></input>
+			<div><input type="hidden" id="d_lng" placeholder="end lng"></input>
 			</div>
-			<div><input id="insertQuote" type="submit" value="Insert Quote"></div>
+			<div><input id="save_route" type="submit" value="Save Route"></div>
 		</form>
+	</div>
+
+	<div id="test">
+
 	</div>
 
 	<footer>
