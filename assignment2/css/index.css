@@ -48,11 +48,6 @@
 	display: none;
 }
 
-/*#map #infoWindow_content_start #infoWindow_content_destination
-{
-	display: inline;
-}*/
-
 #main
 {
 	margin: 10px 10px 0 0;
@@ -101,6 +96,7 @@
 {
 	background-color: #B82601;
 	color: #ffffff;
+	display: none;
 }
 
 #info .li
@@ -118,5 +114,3 @@ footer
 {
 	background-color: #062f4f;
 }
-
-#history {}

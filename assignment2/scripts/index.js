@@ -33,7 +33,6 @@ function setupDestinationAutoComplete(map) {
 	var autocomplete = new google.maps.places.Autocomplete(input);
 
 	autocomplete.addListener('place_changed', function() {
-		// infoWindow.close();
 		var place = autocomplete.getPlace();
 		if (!place.geometry) {
 			window.alert("No details available for: '" + place.name + "'");
@@ -84,6 +83,8 @@ function planRoute() {
 	});
 	getDistance(start, dest);
 	// getWeather(start_lat, start_lng);
+	document.getElementById('info').style.display = "block";
+	document.getElementById('history').style.display = "block";
 }
 
 function getDistance(start, dest) {
@@ -214,7 +215,7 @@ function getData() {
 						}
 				});
 				total_accidents = total_accidents/5/52;
-				$("#accidents").append('\t\t '+total_accidents.toFixed(1));
+				$("#accidents").append('\t\t '+total_accidents.toFixed(2));
 			}
 		});
 }
