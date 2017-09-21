@@ -1,13 +1,13 @@
 {
   "extends" : "thirdParty.api",
   "abstract" : false,
-  "root" : "https://cycleplan-s3542413.appspot.com/_ah/api",
+  "root" : "https://cycleplan-api.appspot.com/_ah/api",
   "name" : "rideendpoint",
   "version" : "v1",
   "defaultVersion" : false,
   "discovery" : [ "PUBLIC" ],
   "adapter" : {
-    "bns" : "https://cycleplan-s3542413.appspot.com/_ah/spi",
+    "bns" : "https://cycleplan-api.appspot.com/_ah/spi",
     "deadline" : 65.0,
     "type" : "lily"
   },
@@ -28,6 +28,68 @@
   "ownerName" : "cycleplan.com",
   "packagePath" : "savedrides.entity",
   "methods" : {
+    "rideendpoint.removeRide" : {
+      "path" : "ride/{id}",
+      "httpMethod" : "DELETE",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.cycleplan.savedrides.entity.RideEndpoint.removeRide",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    },
+    "rideendpoint.listRide" : {
+      "path" : "ride",
+      "httpMethod" : "GET",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.cycleplan.savedrides.entity.RideEndpoint.listRide",
+      "request" : {
+        "parameters" : {
+          "cursor" : {
+            "type" : "string",
+            "required" : false
+          },
+          "limit" : {
+            "type" : "int32",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "rideendpoint.insertRide" : {
+      "path" : "ride",
+      "httpMethod" : "POST",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.cycleplan.savedrides.entity.RideEndpoint.insertRide",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "rideendpoint.getRide" : {
       "path" : "ride/{id}",
       "httpMethod" : "GET",
@@ -64,98 +126,10 @@
       "response" : {
         "body" : "autoTemplate(backendResponse)"
       }
-    },
-    "rideendpoint.removeRide" : {
-      "path" : "ride/{id}",
-      "httpMethod" : "DELETE",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ ],
-      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.cycleplan.savedrides.entity.RideEndpoint.removeRide",
-      "request" : {
-        "parameters" : {
-          "id" : {
-            "type" : "int64",
-            "required" : true
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "empty"
-      }
-    },
-    "rideendpoint.insertRide" : {
-      "path" : "ride",
-      "httpMethod" : "POST",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ ],
-      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.cycleplan.savedrides.entity.RideEndpoint.insertRide",
-      "request" : {
-        "body" : "autoTemplate(backendRequest)",
-        "bodyName" : "resource"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
-    "rideendpoint.listRide" : {
-      "path" : "ride",
-      "httpMethod" : "GET",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ ],
-      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.cycleplan.savedrides.entity.RideEndpoint.listRide",
-      "request" : {
-        "parameters" : {
-          "cursor" : {
-            "type" : "string",
-            "required" : false
-          },
-          "limit" : {
-            "type" : "int32",
-            "required" : false
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
     }
   },
   "descriptor" : {
     "schemas" : {
-      "Ride" : {
-        "id" : "Ride",
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "format" : "int64"
-          },
-          "endLng" : {
-            "type" : "string",
-            "format" : "int64"
-          },
-          "startLng" : {
-            "type" : "string",
-            "format" : "int64"
-          },
-          "endLat" : {
-            "type" : "string",
-            "format" : "int64"
-          },
-          "startLat" : {
-            "type" : "string",
-            "format" : "int64"
-          }
-        }
-      },
       "CollectionResponse_Ride" : {
         "id" : "CollectionResponse_Ride",
         "type" : "object",
@@ -170,9 +144,54 @@
             "type" : "string"
           }
         }
+      },
+      "Ride" : {
+        "id" : "Ride",
+        "type" : "object",
+        "properties" : {
+          "userId" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "recordId" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "startLat" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "endLat" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "endLng" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "startLng" : {
+            "type" : "string",
+            "format" : "int64"
+          }
+        }
       }
     },
     "methods" : {
+      "com.cycleplan.savedrides.entity.RideEndpoint.removeRide" : {
+      },
+      "com.cycleplan.savedrides.entity.RideEndpoint.listRide" : {
+        "response" : {
+          "$ref" : "CollectionResponse_Ride"
+        }
+      },
+      "com.cycleplan.savedrides.entity.RideEndpoint.insertRide" : {
+        "request" : {
+          "$ref" : "Ride"
+        },
+        "response" : {
+          "$ref" : "Ride"
+        }
+      },
       "com.cycleplan.savedrides.entity.RideEndpoint.getRide" : {
         "response" : {
           "$ref" : "Ride"
@@ -184,21 +203,6 @@
         },
         "response" : {
           "$ref" : "Ride"
-        }
-      },
-      "com.cycleplan.savedrides.entity.RideEndpoint.removeRide" : {
-      },
-      "com.cycleplan.savedrides.entity.RideEndpoint.insertRide" : {
-        "request" : {
-          "$ref" : "Ride"
-        },
-        "response" : {
-          "$ref" : "Ride"
-        }
-      },
-      "com.cycleplan.savedrides.entity.RideEndpoint.listRide" : {
-        "response" : {
-          "$ref" : "CollectionResponse_Ride"
         }
       }
     }

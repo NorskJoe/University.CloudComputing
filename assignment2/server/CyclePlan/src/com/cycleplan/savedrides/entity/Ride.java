@@ -10,6 +10,8 @@ import javax.jdo.annotations.PrimaryKey;
 public class Ride {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	Long record_id;
+	@Persistent
 	Long user_id;
 	@Persistent
 	Long start_lat;
@@ -20,11 +22,19 @@ public class Ride {
 	@Persistent
 	Long end_lng;
 	
-	public Long getId() {
+	public Long getRecordId() {
+		return record_id;
+	}
+	
+	public void setRecordId(Long n) {
+		this.record_id = n;
+	}
+	
+	public Long getUserId() {
 		return user_id;
 	}
 	
-	public void setId(Long id) {
+	public void setUserId(Long id) {
 		this.user_id = id;
 	}
 	

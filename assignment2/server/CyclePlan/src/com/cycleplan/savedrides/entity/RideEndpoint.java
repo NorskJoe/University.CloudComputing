@@ -98,7 +98,7 @@ public class RideEndpoint {
 	public Ride insertRide(Ride ride) {
 		PersistenceManager mgr = getPersistenceManager();
 		try {
-			if (ride.getId() != null ) {
+			if(ride.getRecordId() != null) {
 				if (containsRide(ride)) {
 					throw new EntityExistsException("Object already exists");
 				}
@@ -153,7 +153,7 @@ public class RideEndpoint {
 		PersistenceManager mgr = getPersistenceManager();
 		boolean contains = true;
 		try {
-			mgr.getObjectById(Ride.class, ride.getId());
+			mgr.getObjectById(Ride.class, ride.getRecordId());
 		} catch (javax.jdo.JDOObjectNotFoundException ex) {
 			contains = false;
 		} finally {
