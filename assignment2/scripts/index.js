@@ -40,6 +40,8 @@ function setupDestinationAutoComplete(map) {
 		}
 		dest_lat = place.geometry.location.lat();
 		dest_lng = place.geometry.location.lng();
+		document.getElementById('d_lat').value = dest_lat;
+		document.getElementById('d_lng').value = dest_lng;
 	});
 }
 
@@ -59,6 +61,9 @@ function setupStartAutoComplete(map) {
 		}
 		start_lat = place.geometry.location.lat();
 		start_lng = place.geometry.location.lng();
+		document.getElementById('s_lat').value = start_lat;
+		document.getElementById('s_lng').value = start_lng;
+
 	});
 }
 
@@ -82,7 +87,7 @@ function planRoute() {
 		}
 	});
 	getDistance(start, dest);
-	// getWeather(start_lat, start_lng);
+	getWeather(start_lat, start_lng, dest_lat, dest_lng);
 	document.getElementById('info').style.display = "block";
 	document.getElementById('history').style.display = "block";
 }
@@ -122,6 +127,7 @@ function distanceCallback(response, status) {
 ****************************************************/
 function onSignIn(googleUser) {
 	var profile = googleUser.getBasicProfile();
+	document.getElementById('user_id').value = profile.getEmail();
 	// console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
 	// console.log('Name: ' + profile.getName());
 	// console.log('Image URL: ' + profile.getImageUrl());
@@ -141,50 +147,104 @@ function signOut() {
 		API-DATASTORE FUNCTIONS
 *************************************************************/
 function initApi() {
-	gapi.client.load('rideendpoint', 'v1', null, 'https://cycleplan-s3542413.appspot.com/_ah/api');
+	gapi.client.load('rideendpoint', 'v1', null, 'https://cycleplan-api.appspot.com/_ah/api');
 
 	document.getElementById('save_route').onclick = function() {
 		saveRide();
 	}
+
+	document.getElementById('view_saved').onclick = function() {
+		viewRides();
+	}
 }
 
 function saveRide() {
-	var _id = document.getElementById('user_id').value;
-	var _s_lat = document.getElementById('s_lat').value;
-	var _s_lng = document.getElementById('s_lng').value;
-	var _d_lat = document.getElementById('d_lat').value;
-	var _d_lng = document.getElementById('d_lng').value;
+	if (checkSignIn()) {
+		var email = document.getElementById('user_id').value;
+		var s_lat = document.getElementById('s_lat').value;
+		var s_lng = document.getElementById('s_lng').value;
+		var d_lat = document.getElementById('d_lat').value;
+		var d_lng = document.getElementById('d_lng').value;
 
+		var request =
+		{
+			userId: email,
+			startLat: s_lat,
+			startLng: s_lng,
+			endLat: d_lat,
+			endLng: d_lng
+		}
 
-	var request = {};
-	request.user_id = _id;
-	request.start_lat = _s_lat;
-	request.start_lng = _s_lng;
-	request.dest_lat = _d_lat;
-	request.dest_lng = _d_lng;
+		// for (var property in request) {
+		// 	if (request.hasOwnProperty(property)) {
+		// 		alert(property+": "+request[property]);
+		// 	}
+		// }
 
-	gapi.client.rideendpoint.insertRide(request).execute(function (resp) {
+		gapi.client.rideendpoint.insertRide(request).execute(function(resp) {
 			if (!resp.code) {
-				console.log(_id);
-				console.log(_s_lat);
-				console.log(_s_lng);
-				console.log(_d_lat);
-				console.log(_d_lng);
-				alert('ride saved');
+				alert('Ride saved');
 			}
-			else {
-				alert('error');
+		});
+	}
+	else {
+		alert("You must be signed into Google to save rides");
+	}
+
+}
+
+function viewRides() {
+	if (checkSignIn()) {
+		gapi.client.rideendpoint.listRide().execute(function(resp) {
+			console.log(resp);
+			var user_email = $("#user_id").val();
+			for (var i = 0; i < resp.items.length; i++) {
+				if (resp.items[i].userId == user_email) {
+					// Got this users rides
+					// TODO: List rides and make the clickable for user
+				}
 			}
-	});
+		});
+	}
+	else {
+		alert("You must be signed in to view your rides");
+	}
+}
+
+function checkSignIn() {
+	var email = document.getElementById('user_id').value;
+	if (email == "") {
+		return false;
+	} else {
+		return true;
+	}
 }
 
 /*********************************************************************
 		WEATHER FUNCTIONS
 **********************************************************************/
-function getWeather(lat, long) {
-	var url = "https://api.darksky.net/forecast/9eb9c37070bfd11b8f7dd8f0de01c1ca/" + lat + "," + long;
-	$.getJSON(url, function(forecast) {
-		console.log(forecast);
+function getWeather(s_lat, s_lng, d_lat, d_lng) {
+	var proxy = "https://cors-anywhere.herokuapp.com/";
+	var request = "https://api.darksky.net/forecast/9eb9c37070bfd11b8f7dd8f0de01c1ca/" + s_lat + "," + s_lng + "?units=si";
+
+	$.ajax({
+		url: proxy + request,
+		success: function(data) {
+			$("#start_weather").append('\t\t '+data.currently.summary+", ");
+			$("#start_weather").append('\t\t '+data.currently.apparentTemperature.toFixed(0)+"&deg;C, ");
+			$("#start_weather").append('\t\t '+(data.currently.precipProbability*100)+"% chance of rain");
+		}
+	});
+
+	var request = "https://api.darksky.net/forecast/9eb9c37070bfd11b8f7dd8f0de01c1ca/" + d_lat + "," + d_lng + "?units=si";
+
+	$.ajax({
+		url: proxy + request,
+		success: function(data) {
+			$("#dest_weather").append('\t\t '+data.currently.summary+", ");
+			$("#dest_weather").append('\t\t '+data.currently.apparentTemperature.toFixed(0)+"&deg;C, ");
+			$("#dest_weather").append('\t\t '+(data.currently.precipProbability*100)+"% chance of rain");
+		}
 	});
 }
 

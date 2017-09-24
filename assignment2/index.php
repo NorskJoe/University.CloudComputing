@@ -59,19 +59,19 @@
 
 	<!-- User history -->
 	<div id="history">
-		<form>
-			<h2>Insert New Quote</h2>
-			<div><input type="hidden" id="user_id" placeholder="id"></input>
+		<form action="javascript:void(0);">
+			<div><input type="hidden" id="user_id" ></input>
 			</div>
-			<div><input type="hidden" id="s_lat" placeholder="start lat"></input>
+			<div><input type="hidden" id="s_lat"></input>
 			</div>
-			<div><input type="hidden" id="s_lng" placeholder="start lng"></input>
+			<div><input type="hidden" id="s_lng"></input>
 			</div>
-			<div><input type="hidden" id="d_lat" placeholder="end lat"></input>
+			<div><input type="hidden" id="d_lat"></input>
 			</div>
-			<div><input type="hidden" id="d_lng" placeholder="end lng"></input>
+			<div><input type="hidden" id="d_lng"></input>
 			</div>
 			<div><input id="save_route" type="submit" value="Save Route"></div>
+			<div><input id="view_saved" type="submit" value="View Saved Routes"></div>
 		</form>
 	</div>
 

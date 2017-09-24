@@ -13,7 +13,7 @@ handlers:
    static_dir: images
 
  - url: /.*
-   script: index.html
+   script: index.php
 
 skip_files:
  - /ignore

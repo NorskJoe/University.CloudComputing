@@ -12,15 +12,15 @@ public class Ride {
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	Long record_id;
 	@Persistent
-	Long user_id;
+	String user_mail;
 	@Persistent
-	Long start_lat;
+	String start_lat;
 	@Persistent
-	Long start_lng;
+	String start_lng;
 	@Persistent
-	Long end_lat;
+	String end_lat;
 	@Persistent
-	Long end_lng;
+	String end_lng;
 	
 	public Long getRecordId() {
 		return record_id;
@@ -30,43 +30,43 @@ public class Ride {
 		this.record_id = n;
 	}
 	
-	public Long getUserId() {
-		return user_id;
+	public String getUserId() {
+		return user_mail;
 	}
 	
-	public void setUserId(Long id) {
-		this.user_id = id;
+	public void setUserId(String mail) {
+		this.user_mail = mail;
 	}
 	
-	public Long getStartLat() {
+	public String getStartLat() {
 		return start_lat;
 	}
 	
-	public void setStartLat(Long n) {
+	public void setStartLat(String n) {
 		this.start_lat = n;
 	}
 	
-	public Long getStartLng() {
+	public String getStartLng() {
 		return start_lng;
 	}
 	
-	public void setStartLng(Long n) {
+	public void setStartLng(String n) {
 		this.start_lng = n;
 	}
 	
-	public Long getEndLat() {
+	public String getEndLat() {
 		return end_lat;
 	}
 	
-	public void setEndLat(Long n) {
+	public void setEndLat(String n) {
 		this.end_lat = n;
 	}
 	
-	public Long getEndLng() {
+	public String getEndLng() {
 		return this.end_lng;
 	}
 	
-	public void setEndLng(Long n) {
+	public void setEndLng(String n) {
 		this.end_lng = n;
 	}
 
