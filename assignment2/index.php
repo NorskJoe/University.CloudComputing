@@ -18,15 +18,12 @@
 <body onload="initMap(); initApi();" class="main">
 
 	<!-- The banner -->
+	<div class="g-signin2" data-onsuccess="onSignIn"></div>
 	<div id="banner">
-		<a href="/"><img src="images/logo.PNG"></a>
+		<!-- <a href="/"><img src="images/logo.PNG"></a> -->
 		<h1>Welcome to CyclePlan</h1>
 	</div>
 
-	<!-- Login menu -->
-	<div id="login">
-		<div class="g-signin2" data-onsuccess="onSignIn"></div>
-	</div>
 
 	<!-- Main map and input -->
 	<div>
@@ -45,41 +42,36 @@
 		<div id="map"></div>
 	</div>
 
-	<!-- Information display -->
-	<div id="info">
-		<p id="distance">Total distance: </p>
-		<p id="duration">Estimated duration: </p>
-		<p id="start_weather">Starting location weather: </p>
-		<p id="dest_weather">Finish location weather: </p>
-		<p id="ascent">Total ascent: </p>
-		<p id="descent">Total descent: </p>
-		<p id="accidents">Number of accidents in this area*: </p>
-		<p>*Involving bicycles in an average week (data taken from vicroads.gov.au)</p>
-	</div>
-
-	<!-- User history -->
-	<div id="history">
-		<form action="javascript:void(0);">
-			<div><input type="hidden" id="user_id" ></input>
-			</div>
-			<div><input type="hidden" id="s_lat"></input>
-			</div>
-			<div><input type="hidden" id="s_lng"></input>
-			</div>
-			<div><input type="hidden" id="d_lat"></input>
-			</div>
-			<div><input type="hidden" id="d_lng"></input>
-			</div>
+	<div id="bottom-box">
+		<!-- Information display -->
+		<div id="info">
+			<h2 style="margin-left: 40%;">Ride Information</h2>
+			<p id="distance"></p>
+			<p id="duration"></p>
+			<p id="start_weather"></p>
+			<p id="dest_weather"></p>
+			<p id="ascent"></p>
+			<p id="descent"></p>
+			<p id="accidents"></p>
+			<p>*Involving bicycles in an average week (data taken from vicroads.gov.au)</p>
 			<div><input id="save_route" type="submit" value="Save Route"></div>
-			<div><input id="view_saved" type="submit" value="View Saved Routes"></div>
-		</form>
+		</div>
+
+		<!-- User history -->
+		<div id="user_tools">
+			<div><input type="hidden" id="user_id" ></input></div>
+			<div><input type="hidden" id="s_lat"></input></div>
+			<div><input type="hidden" id="s_lng"></input></div>
+			<div><input type="hidden" id="d_lat"></input></div>
+			<div><input type="hidden" id="d_lng"></input></div>
+			<div id="saved_rides">
+				<h2 style="margin-left:40%;">Your Saved Rides</h2>
+				<ul id="ride_list" style="list-style-type: none;"></ul>
+			</div>
+		</div>
 	</div>
 
-	<div id="test">
-
-	</div>
-
-	<footer>
+	<footer id="footer">
 		<p>Created By: Joseph Johnson - s3542413</p>
 		<p><a href="https://darksky.net/poweredby/">Powered by DarkSky</a></p>
 	</footer>

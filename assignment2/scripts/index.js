@@ -4,10 +4,8 @@
 var map;
 var directionsService;
 var directionsDisplay;
-var start_lat;
-var start_lng;
-var dest_lat;
-var dest_lng;
+var startGeo = {};
+var destGeo = {};
 
 function initMap() {
 	directionsService = new google.maps.DirectionsService;
@@ -38,10 +36,10 @@ function setupDestinationAutoComplete(map) {
 			window.alert("No details available for: '" + place.name + "'");
 			return;
 		}
-		dest_lat = place.geometry.location.lat();
-		dest_lng = place.geometry.location.lng();
-		document.getElementById('d_lat').value = dest_lat;
-		document.getElementById('d_lng').value = dest_lng;
+		destGeo.lat = place.geometry.location.lat();
+		destGeo.lng = place.geometry.location.lng();
+		document.getElementById('d_lat').value = destGeo.lat;
+		document.getElementById('d_lng').value = destGeo.lng;
 	});
 }
 
@@ -59,10 +57,10 @@ function setupStartAutoComplete(map) {
 			window.alert("No details available for: '" + place.name + "'");
 			return;
 		}
-		start_lat = place.geometry.location.lat();
-		start_lng = place.geometry.location.lng();
-		document.getElementById('s_lat').value = start_lat;
-		document.getElementById('s_lng').value = start_lng;
+		startGeo.lat = place.geometry.location.lat();
+		startGeo.lng = place.geometry.location.lng();
+		document.getElementById('s_lat').value = startGeo.lat;
+		document.getElementById('s_lng').value = startGeo.lng;
 
 	});
 }
@@ -87,9 +85,12 @@ function planRoute() {
 		}
 	});
 	getDistance(start, dest);
-	getWeather(start_lat, start_lng, dest_lat, dest_lng);
-	document.getElementById('info').style.display = "block";
-	document.getElementById('history').style.display = "block";
+	console.log(startGeo.lat);
+	console.log(startGeo.lng);
+	getWeather(startGeo.lat, startGeo.lng, destGeo.lat, destGeo.lng);
+	document.getElementById('bottom-box').style.display = "inline-block";
+	document.getElementById('info').style.display = "inline-block";
+
 }
 
 function getDistance(start, dest) {
@@ -115,8 +116,8 @@ function distanceCallback(response, status) {
 				var element = results[j];
 				var distance = element.distance.text;
 				var duration = element.duration.text;
-				$("#distance").append('\t\t '+distance);
-				$("#duration").append('\t\t '+duration);
+				document.getElementById('distance').innerHTML = "Total distance: "+distance;
+				document.getElementById('duration').innerHTML = "Estimated duration: "+duration;
 			}
 		}
 	}
@@ -128,6 +129,8 @@ function distanceCallback(response, status) {
 function onSignIn(googleUser) {
 	var profile = googleUser.getBasicProfile();
 	document.getElementById('user_id').value = profile.getEmail();
+	document.getElementById('bottom-box').style.display = "block";
+	viewRides();
 	// console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
 	// console.log('Name: ' + profile.getName());
 	// console.log('Image URL: ' + profile.getImageUrl());
@@ -152,10 +155,6 @@ function initApi() {
 	document.getElementById('save_route').onclick = function() {
 		saveRide();
 	}
-
-	document.getElementById('view_saved').onclick = function() {
-		viewRides();
-	}
 }
 
 function saveRide() {
@@ -175,12 +174,6 @@ function saveRide() {
 			endLng: d_lng
 		}
 
-		// for (var property in request) {
-		// 	if (request.hasOwnProperty(property)) {
-		// 		alert(property+": "+request[property]);
-		// 	}
-		// }
-
 		gapi.client.rideendpoint.insertRide(request).execute(function(resp) {
 			if (!resp.code) {
 				alert('Ride saved');
@@ -196,12 +189,10 @@ function saveRide() {
 function viewRides() {
 	if (checkSignIn()) {
 		gapi.client.rideendpoint.listRide().execute(function(resp) {
-			console.log(resp);
 			var user_email = $("#user_id").val();
 			for (var i = 0; i < resp.items.length; i++) {
 				if (resp.items[i].userId == user_email) {
-					// Got this users rides
-					// TODO: List rides and make the clickable for user
+					createList(resp.items[i], i);
 				}
 			}
 		});
@@ -209,6 +200,78 @@ function viewRides() {
 	else {
 		alert("You must be signed in to view your rides");
 	}
+}
+
+function createList(rideObject, counter) {
+	var startLat = rideObject.startLat;
+	var startLng = rideObject.startLng;
+	var endLat = rideObject.endLat;
+	var endLng = rideObject.endLng;
+
+	var start = "http://maps.googleapis.com/maps/api/geocode/json?latlng="+startLat+","+startLng;
+	var dest = "http://maps.googleapis.com/maps/api/geocode/json?latlng="+endLat+","+endLng;
+
+	var start_suburb;
+	var start_address;
+	$.ajax({
+		dataType: "json",
+		url: start,
+		success: function(data) {
+			var suburb = data.results[0].address_components[2].long_name;
+			var state = data.results[0].address_components[4].long_name;
+			var country = data.results[0].address_components[5].long_name;
+			start_address = suburb + ", " + state + ", " + country;
+			start_suburb = suburb;
+		}
+	});
+
+	$.ajax({
+		dataType: "json",
+		url: dest,
+		success: function(data) {
+			var suburb = data.results[0].address_components[2].long_name;
+			var state = data.results[0].address_components[4].long_name;
+			var country = data.results[0].address_components[5].long_name;
+			var dest_address = suburb + ", " + state + ", " + country;
+			var ul = document.getElementById('ride_list');
+			var li = document.createElement("li");
+			li.appendChild(document.createTextNode(start_suburb+" to "+suburb));
+			li.onclick = function() {
+				getSavedRide(start_address, dest_address);
+			};
+			ul.appendChild(li);
+		}
+	});
+}
+
+function getSavedRide(start, dest) {
+	$("#start_input").val(start);
+	$("#destination_input").val(dest);
+
+	getLatLng(start, true);
+	getLatLng(dest, false);
+	planRoute();
+	getData();
+}
+
+function getLatLng(address, start_flag) {
+	var request = "https://maps.googleapis.com/maps/api/geocode/json?address="+address+"&key=AIzaSyCE-GZ0miPhO4ez96w3KqaT75dDfXFM-uQ";
+
+	$.ajax({
+		dataType: "json",
+		url: request,
+		async: false,
+		success: function(data) {
+			if (start_flag == true) {
+				startGeo.lat = data.results[0].geometry.location.lat;
+				startGeo.lng = data.results[0].geometry.location.lng;
+			}
+			else {
+				destGeo.lat = data.results[0].geometry.location.lat;
+				destGeo.lng = data.results[0].geometry.location.lng;
+			}
+		}
+	});
 }
 
 function checkSignIn() {
@@ -230,9 +293,10 @@ function getWeather(s_lat, s_lng, d_lat, d_lng) {
 	$.ajax({
 		url: proxy + request,
 		success: function(data) {
-			$("#start_weather").append('\t\t '+data.currently.summary+", ");
-			$("#start_weather").append('\t\t '+data.currently.apparentTemperature.toFixed(0)+"&deg;C, ");
-			$("#start_weather").append('\t\t '+(data.currently.precipProbability*100)+"% chance of rain");
+			$("#start_weather").html("Weather at start: ");
+			$("#start_weather").append(data.currently.summary+", ");
+			$("#start_weather").append(data.currently.apparentTemperature.toFixed(0)+"&deg;C, ");
+			$("#start_weather").append((data.currently.precipProbability*100).toFixed(0)+"% chance of rain");
 		}
 	});
 
@@ -240,10 +304,12 @@ function getWeather(s_lat, s_lng, d_lat, d_lng) {
 
 	$.ajax({
 		url: proxy + request,
+		// async: false,
 		success: function(data) {
+			$("#dest_weather").html("Weather at destination: ");
 			$("#dest_weather").append('\t\t '+data.currently.summary+", ");
 			$("#dest_weather").append('\t\t '+data.currently.apparentTemperature.toFixed(0)+"&deg;C, ");
-			$("#dest_weather").append('\t\t '+(data.currently.precipProbability*100)+"% chance of rain");
+			$("#dest_weather").append('\t\t '+(data.currently.precipProbability*100).toFixed(0)+"% chance of rain");
 		}
 	});
 }
@@ -275,7 +341,7 @@ function getData() {
 						}
 				});
 				total_accidents = total_accidents/5/52;
-				$("#accidents").append('\t\t '+total_accidents.toFixed(2));
+				document.getElementById('accidents').innerHTML = "Road accidents in these areas*: "+total_accidents.toFixed(2);
 			}
 		});
 }
