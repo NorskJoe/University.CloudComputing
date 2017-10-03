@@ -36,7 +36,7 @@
 			<div id="map_input">
 				<input type="text" id="start_input" placeholder="Enter a starting point">
 				<input type="text" id="destination_input" placeholder="Enter a destination">
-				<input type="submit" onclick="planRoute(); getData();" value="Plan Route">
+				<input type="submit" onclick="planRoute(); getCollisionData();" value="Plan Route">
 			</div>
 		</div>
 		<div id="map"></div>
@@ -53,7 +53,7 @@
 			<p id="ascent"></p>
 			<p id="descent"></p>
 			<p id="accidents"></p>
-			<p>*Involving bicycles in an average week (data taken from vicroads.gov.au)</p>
+			<p id="small_print">*Involving bicycles in an average week (data taken from vicroads.gov.au)</p>
 			<div><input id="save_route" type="submit" value="Save Route"></div>
 		</div>
 
@@ -72,7 +72,7 @@
 	</div>
 
 	<footer id="footer">
-		<p>Created By: Joseph Johnson - s3542413</p>
+		<p>Created By: Joseph Johnson <a href="https://www.rmit.edu.au/">@RMIT</a> s3542413</p>
 		<p><a href="https://darksky.net/poweredby/">Powered by DarkSky</a></p>
 	</footer>
 </body>

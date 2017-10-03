@@ -85,8 +85,6 @@ function planRoute() {
 		}
 	});
 	getDistance(start, dest);
-	console.log(startGeo.lat);
-	console.log(startGeo.lng);
 	getWeather(startGeo.lat, startGeo.lng, destGeo.lat, destGeo.lng);
 	document.getElementById('bottom-box').style.display = "inline-block";
 	document.getElementById('info').style.display = "inline-block";
@@ -192,7 +190,7 @@ function viewRides() {
 			var user_email = $("#user_id").val();
 			for (var i = 0; i < resp.items.length; i++) {
 				if (resp.items[i].userId == user_email) {
-					createList(resp.items[i], i);
+					createList(resp.items[i]);
 				}
 			}
 		});
@@ -202,7 +200,7 @@ function viewRides() {
 	}
 }
 
-function createList(rideObject, counter) {
+function createList(rideObject) {
 	var startLat = rideObject.startLat;
 	var startLng = rideObject.startLng;
 	var endLat = rideObject.endLat;
@@ -251,7 +249,7 @@ function getSavedRide(start, dest) {
 	getLatLng(start, true);
 	getLatLng(dest, false);
 	planRoute();
-	getData();
+	getCollisionData();
 }
 
 function getLatLng(address, start_flag) {
@@ -304,7 +302,6 @@ function getWeather(s_lat, s_lng, d_lat, d_lng) {
 
 	$.ajax({
 		url: proxy + request,
-		// async: false,
 		success: function(data) {
 			$("#dest_weather").html("Weather at destination: ");
 			$("#dest_weather").append('\t\t '+data.currently.summary+", ");
@@ -317,7 +314,7 @@ function getWeather(s_lat, s_lng, d_lat, d_lng) {
 /***********************************************************************
 		VIC ROADS COLLISIONS DATA FUNCTIONS
 ************************************************************************/
-function getData() {
+function getCollisionData() {
 	var start_suburb = $("#start_input").val();
 	var dest_suburb = $("#destination_input").val();
 	start_suburb = start_suburb.match(/[a-zA-Z\s]*(?=,)/);
