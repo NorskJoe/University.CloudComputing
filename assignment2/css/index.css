@@ -85,7 +85,7 @@
 	display: none;
 	width: 50%;
 	float: left;
-	height: 400px;
+	height: 450px;
 }
 
 #info p {
@@ -113,7 +113,7 @@
 #user_tools {
 	background-color: #B82601;
 	width: 50%;
-	height: 400px;
+	height: 450px;
 	display: inline-block;
 }
 
